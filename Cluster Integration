@@ -1,0 +1,92 @@
+# hpc_cluster_gcp.py
+# Author: Abdul Muqeet Agha
+# Description: Final project script to document the steps for deploying and configuring
+# an HPC cluster on Google Cloud Platform using Slurm, Apptainer, and MPI
+
+# SECTION 1: Introduction
+# This script outlines the procedures used to deploy a High-Performance Computing (HPC)
+# cluster on GCP, integrate it with NYU Greene, and set up containerized MPI workloads.
+
+# SECTION 2: Project Objectives
+project_objectives = [
+    "Deploy a scalable HPC cluster on GCP using Slurm",
+    "Ensure secure file transfer mechanisms between NYU Greene and GCP",
+    "Implement a load balancer for traffic management",
+    "Set up Apptainer, Singularity, and MPI for containerized computational tasks",
+    "Optimize performance by adjusting machine types and CPU configurations"
+]
+
+# SECTION 3: Initial Setup and Cluster Deployment
+# Required GCP APIs to be enabled
+required_apis = [
+    "Compute Engine",
+    "Filestore",
+    "Cloud Storage",
+    "Service Usage",
+    "Secret Manager",
+    "Resource Manager"
+]
+
+# Sample cluster deployment commands
+cluster_deploy_commands = [
+    "./gcluster create examples/hpc-slurm.yaml -l ERROR --vars project_id=<PROJECT_ID>",
+    "./gcluster deploy hpc-slurm",
+    "srun -N 3 hostname"
+]
+
+# Sample configuration changes
+vm_configuration = {
+    "default_machine_type": "n2-standard-4",
+    "cpus_per_instance": 4,
+    "autoscaling": True,
+    "persistent_disks": True
+}
+
+# SECTION 4: Load Balancer Setup
+load_balancer_steps = [
+    "Create Network Endpoint Group (NEG)",
+    "Configure health checks",
+    "Create and configure Load Balancer",
+    "Allow traffic via firewall: gcloud compute firewall-rules update gcp-cluster-login-fw --source-ranges=0.0.0.0/0"
+]
+
+# SECTION 5: Apptainer and MPI Setup
+# Installation commands for Apptainer
+apptainer_install_cmds = [
+    "sudo yum install -y epel-release",
+    "sudo yum install -y gcc make libuuid-devel libseccomp-devel wget squashfs-tools cryptsetup",
+    "wget https://github.com/apptainer/apptainer/releases/download/v1.1.0/apptainer-1.1.0.tar.gz",
+    "tar -xzf apptainer-1.1.0.tar.gz",
+    "cd apptainer-1.1.0",
+    "./mconfig",
+    "make -C ./builddir",
+    "sudo make -C ./builddir install"
+]
+
+# Sample MPI run command using Apptainer
+mpi_run_command = "mpirun -np 4 singularity exec mpi-container.sif mpi_program"
+
+# SECTION 6: Performance Optimization
+performance_tuning = {
+    "login_node_type": "n2-standard-4",
+    "command_to_set_machine_type": "gcloud compute instances set-machine-type <INSTANCE_NAME> --machine-type=n2-standard-4",
+    "verify_cpu_cmd": "lscpu"
+}
+
+# SECTION 7: Presentation Highlights
+presentation_outline = [
+    "Overview of project goals",
+    "Step-by-step cluster deployment using Slurm",
+    "Secure file transfer with Globus",
+    "GCP load balancer configuration",
+    "Containerized workload execution using Apptainer and MPI",
+    "Summary and future work"
+]
+
+# SECTION 8: Conclusion
+project_conclusion = """
+This project successfully demonstrated the deployment of a scalable HPC cluster on GCP
+with Slurm job scheduling, containerization using Apptainer, secure data transfers, and
+performance optimization. The setup supports diverse research workflows and can be further
+enhanced with GPU support and automated pipelines.
+"""
